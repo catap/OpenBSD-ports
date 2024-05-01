@@ -1,0 +1,64 @@
+Index: clients/pkg/promtail/targets/syslog/transport.go
+--- clients/pkg/promtail/targets/syslog/transport.go.orig
++++ clients/pkg/promtail/targets/syslog/transport.go
+@@ -1,6 +1,7 @@
+ package syslog
+ 
+ import (
++	"bytes"
+ 	"context"
+ 	"crypto/tls"
+ 	"crypto/x509"
+@@ -271,7 +272,7 @@ func (t *TCPTransport) handleConnection(cn net.Conn) {
+ 
+ 	lbs := t.connectionLabels(ipFromConn(c).String())
+ 
+-	err := syslogparser.ParseStream(c, func(result *syslog.Result) {
++	err := syslogparser.ParseStream(t.config.IsRFC3164Message, c, func(result *syslog.Result) {
+ 		if err := result.Error; err != nil {
+ 			t.handleMessageError(err)
+ 			return
+@@ -379,17 +380,34 @@ func (t *UDPTransport) acceptPackets() {
+ func (t *UDPTransport) handleRcv(c *ConnPipe) {
+ 	defer t.openConnections.Done()
+ 
+-	lbs := t.connectionLabels(c.addr.String())
+-	err := syslogparser.ParseStream(c, func(result *syslog.Result) {
+-		if err := result.Error; err != nil {
+-			t.handleMessageError(err)
+-		} else {
+-			t.handleMessage(lbs.Copy(), result.Message)
++	udpAddr, _ := net.ResolveUDPAddr("udp", c.addr.String())
++	lbs := t.connectionLabels(udpAddr.IP.String())
++
++	for {
++		datagram := make([]byte, t.maxMessageLength())
++		n, err := c.Read(datagram)
++		if err != nil {
++			if err == io.EOF {
++				break
++			}
++
++			level.Warn(t.logger).Log("msg", "error reading from pipe", "err", err)
++			continue
+ 		}
+-	}, t.maxMessageLength())
+ 
+-	if err != nil {
+-		level.Warn(t.logger).Log("msg", "error parsing syslog stream", "err", err)
++		r := bytes.NewReader(datagram[:n])
++
++		err = syslogparser.ParseStream(t.config.IsRFC3164Message, r, func(result *syslog.Result) {
++			if err := result.Error; err != nil {
++				t.handleMessageError(err)
++			} else {
++				t.handleMessage(lbs.Copy(), result.Message)
++			}
++		}, t.maxMessageLength())
++
++		if err != nil {
++			level.Warn(t.logger).Log("msg", "error parsing syslog stream", "err", err)
++		}
+ 	}
+ }
+ 

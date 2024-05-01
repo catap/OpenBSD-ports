@@ -3,7 +3,7 @@ COMMENT-promtail =	tails log files and pushes them to Loki
 
 GH_ACCOUNT =	grafana
 GH_PROJECT =	loki
-GH_TAGNAME =	v2.9.3
+GH_TAGNAME =	v3.0.0
 
 CATEGORIES =	sysutils
 
@@ -17,9 +17,16 @@ PERMIT_PACKAGE =	Yes
 MODULES =	lang/go
 WANTLIB =	c pthread
 
+BUILD_DEPENDS=	devel/gmake \
+		devel/ragel \
+		lang/gawk \
+		shells/bash
+
 MODGO_FLAGS += -ldflags="-w -X github.com/grafana/loki/pkg/build.Version=${GH_TAGNAME:C/^v//}"
 
 do-build:
+	gmake -C ${WRKSRC}/vendor/github.com/influxdata/go-syslog/v3 nontransparent/parser.go
+	gmake -C ${WRKSRC}/vendor/github.com/influxdata/go-syslog/v3 rfc3164/machine.go
 	cd ${WRKSRC} && ${MODGO_CMD} build ${MODGO_FLAGS} -o bin/loki ./cmd/loki
 	cd ${WRKSRC} && ${MODGO_CMD} build ${MODGO_FLAGS} -o bin/promtail ./clients/cmd/promtail
 	cd ${WRKSRC} && ${MODGO_CMD} build ${MODGO_FLAGS} -o bin/logcli ./cmd/logcli

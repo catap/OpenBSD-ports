@@ -1,0 +1,48 @@
+Index: vendor/github.com/influxdata/go-syslog/v3/octetcounting/parser.go
+--- vendor/github.com/influxdata/go-syslog/v3/octetcounting/parser.go.orig
++++ vendor/github.com/influxdata/go-syslog/v3/octetcounting/parser.go
+@@ -5,6 +5,7 @@ import (
+ 	"io"
+ 
+ 	syslog "github.com/influxdata/go-syslog/v3"
++	"github.com/influxdata/go-syslog/v3/rfc3164"
+ 	"github.com/influxdata/go-syslog/v3/rfc5424"
+ )
+ 
+@@ -43,6 +44,26 @@ func NewParser(opts ...syslog.ParserOption) syslog.Par
+ 	return p
+ }
+ 
++func NewParserRFC3164(opts ...syslog.ParserOption) syslog.Parser {
++	p := &parser{
++		emit:             func(*syslog.Result) { /* noop */ },
++		maxMessageLength: 1024,
++	}
++
++	for _, opt := range opts {
++		p = opt(p).(*parser)
++	}
++
++	// Create internal parser depending on options
++	if p.bestEffort {
++		p.internal = rfc3164.NewMachine(rfc3164.WithBestEffort())
++	} else {
++		p.internal = rfc3164.NewMachine()
++	}
++
++	return p
++}
++
+ func (p *parser) WithMaxMessageLength(length int) {
+ 	p.maxMessageLength = length
+ }
+@@ -134,7 +155,8 @@ func (p *parser) run() {
+ 		// Next we MUST see an EOF otherwise the parsing we'll start again
+ 		if tok = p.scan(); tok.typ == EOF {
+ 			break
+-		} else {
++		} else if tok.typ != LF {
++			// but some syslog may separate lines with octet by \n, ignore it
+ 			p.unscan()
+ 		}
+ 	}
