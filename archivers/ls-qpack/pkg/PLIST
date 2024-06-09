@@ -1,0 +1,3 @@
+include/lsqpack.h
+include/lsxpack_header.h
+@lib lib/libls-qpack.so.${LIBls-qpack_VERSION}
