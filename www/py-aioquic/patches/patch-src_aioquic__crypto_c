@@ -1,0 +1,16 @@
+Ciphers and digests are handled in a static lookup in OpenBSD
+Index: src/aioquic/_crypto.c
+--- src/aioquic/_crypto.c.orig
++++ src/aioquic/_crypto.c
+@@ -406,11 +406,5 @@ PyInit__crypto(void)
+         return NULL;
+     PyModule_AddObject(m, "HeaderProtection", HeaderProtectionType);
+ 
+-    // ensure required ciphers are initialised
+-    EVP_add_cipher(EVP_aes_128_ecb());
+-    EVP_add_cipher(EVP_aes_128_gcm());
+-    EVP_add_cipher(EVP_aes_256_ecb());
+-    EVP_add_cipher(EVP_aes_256_gcm());
+-
+     return m;
+ }
