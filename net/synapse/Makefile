@@ -71,10 +71,18 @@ RUN_DEPENDS +=	www/py-requests${MODPY_FLAVOR}
 TEST_DEPENDS =	${FULLPKGNAME}:${BUILD_PKGPATH} \
 		devel/py-mock${MODPY_FLAVOR} \
 		devel/py-parameterized${MODPY_FLAVOR} \
+		devel/py-test-forked${MODPY_FLAVOR} \
 		www/py-jwt${MODPY_FLAVOR}
 
 do-configure:
 	@${MODCARGO_configure}
+
+MODPY_PYTEST_ARGS =	--forked tests/
+MODPY_TEST_DIR =	${WRKDIR}
+
+pre-test:
+	@rm -fr ${WRKDIR}/tests
+	@cp -r ${WRKSRC}/tests ${WRKDIR}/
 
 # to generate rust modules.inc:
 #  make modcargo-gen-crates and modcargo-gen-crates-licenses
