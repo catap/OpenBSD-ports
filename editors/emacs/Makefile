@@ -4,7 +4,7 @@ COMMENT=		GNU editor: extensible, customizable, self-documenting
 # Zap post-extract when updating
 VERSION=		29.4
 DISTNAME=		emacs-${VERSION}
-REVISION=		0
+REVISION=		2
 
 CATEGORIES=		editors
 
@@ -20,6 +20,11 @@ WANTLIB += tree-sitter xml2 z
 
 SITES=			${SITE_GNU:=emacs/}
 EXTRACT_SUFX=		.tar.xz
+
+# https://debbugs.gnu.org/cgi/bugreport.cgi?bug=71712#8
+CFLAGS =		-O2 -g3
+CONFIGURE_ARGS+=	--enable-checking='yes,glyphs' \
+			--enable-check-lisp-object-type
 
 DEBUG_PACKAGES =	${BUILD_PACKAGES}
 
