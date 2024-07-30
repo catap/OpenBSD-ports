@@ -1,6 +1,6 @@
 COMMENT =		Rust components used in mitmproxy
 
-MODPY_EGG_VERSION =	0.6.2
+MODPY_EGG_VERSION =	0.6.3
 DISTNAME =		mitmproxy_rs-${MODPY_EGG_VERSION}
 PKGNAME =		py-${DISTNAME}
 
