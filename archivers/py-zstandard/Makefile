@@ -17,11 +17,9 @@ BUILD_DEPENDS =		devel/py-cffi${MODPY_FLAVOR}
 FLAVORS =		python3
 FLAVOR =		python3
 
-MODPY_PYTEST_ARGS =	tests/
-MODPY_TEST_DIR =	${WRKDIR}
-
 pre-test:
-	@rm -rf ${WRKDIR}/tests
-	@cp -r ${WRKSRC}/tests ${WRKDIR}/
+	find ${WRKSRC}/build/lib.openbsd-${OSREV}-${ARCH}-cpython-${MODPY_MAJORMINOR}/zstandard \
+		-name '*.so' -type f \
+		-exec ln -s {} ${WRKSRC}/zstandard \;
 
 .include <bsd.port.mk>
