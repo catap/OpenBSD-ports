@@ -1,4 +1,4 @@
-@conflict py3-z3-solver-*
+@conflict ${MODPY_PY_PREFIX}z3-solver-*
 @bin bin/z3
 include/z3++.h
 include/z3.h
