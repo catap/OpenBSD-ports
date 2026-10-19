@@ -36,7 +36,7 @@ _COMPILER_ARCHS += ${CLANG_ARCHS}
 CHOSEN_COMPILER ?= base-clang
 .    endif
 .  elif "$c" == "ports-gcc"
-MODGCC4_ARCHS ?=	${GCC49_ARCHS}
+MODGCC4_ARCHS ?=	${PORTSGCC_ARCHS}
 _MODGCC4_ARCH_USES = 	No
 _COMPILER_ARCHS += ${MODGCC4_ARCHS}
 .    for _i in ${MODGCC4_ARCHS}

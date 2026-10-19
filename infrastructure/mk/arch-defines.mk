@@ -40,10 +40,10 @@ LLD_ARCHS = aarch64 amd64 arm i386 powerpc powerpc64 riscv64 sparc64
 # as well as available for PROPERTIES checks.
 LLVM_ARCHS = aarch64 amd64 arm i386 mips64 mips64el powerpc powerpc64 riscv64 sparc64
 # arches where ports-gcc >4.9 exists.  To be used again for modules
-GCC49_ARCHS = aarch64 alpha amd64 arm hppa i386 mips64 mips64el powerpc powerpc64 riscv64 sparc64
+PORTSGCC_ARCHS = aarch64 alpha amd64 arm hppa i386 mips64 mips64el powerpc powerpc64 riscv64 sparc64
 
 # arches where there is a C++11 compiler, either clang in base or ports-gcc
-CXX11_ARCHS = ${CLANG_ARCHS} ${GCC49_ARCHS}
+CXX11_ARCHS = ${CLANG_ARCHS} ${PORTSGCC_ARCHS}
 DEBUGINFO_ARCHS = aarch64 amd64
 
 .for PROP in ALL APM BE LE LP64 CLANG GCC4 GCC49 MONO LLVM LUAJIT \

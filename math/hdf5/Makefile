@@ -1,4 +1,4 @@
-ONLY_FOR_ARCHS =	${GCC49_ARCHS}
+ONLY_FOR_ARCHS =	${PORTSGCC_ARCHS}
 
 COMMENT =		Hierarchical Data Format 5 Technology suite
 

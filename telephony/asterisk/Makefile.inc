@@ -40,7 +40,7 @@ DEBUG_PACKAGES=	${BUILD_PACKAGES}
 COMPILER=		base-clang ports-gcc
 # XXX bsd.port.arch.mk is included below, before compiler.port.mk can set
 # ONLY_FOR_ARCHS
-ONLY_FOR_ARCHS=		${CLANG_ARCHS} ${GCC49_ARCHS}
+ONLY_FOR_ARCHS=		${CLANG_ARCHS} ${PORTSGCC_ARCHS}
 
 SHARED_LIBS+=		asteriskssl ${SHLIB_V}
 SHARED_LIBS+=		asteriskpj ${SHLIB_V}
